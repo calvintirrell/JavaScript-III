@@ -17,6 +17,7 @@ const GameObject = function(obj) {
   this.createdAt = obj.createdAt;
   this.dimensions = obj.dimensions;
 };
+
 GameObject.prototype.destroy = function() {
   return `${this.name} was removed from the game.`;
 };
@@ -34,12 +35,16 @@ const CharacterStats = function(obj) {
   this.hp = obj.hp;
   this.name = obj.name;
 };
+
 // console.log(GameObject.prototype);
 CharacterStats.prototype = {...GameObject.prototype};
 CharacterStats.prototype.takeDamage = function() {
   return `${this.name} took damage.`;
 };
 
+CharacterStats.prototype.hit = function() {
+  return `${this.name} hit ${this.name} for 1 damage.`;
+}
 
 /*
 === Humanoid ===
@@ -64,9 +69,6 @@ Humanoid.prototype.greet = function() {
  return `${this.name} offers a greeting in ${this.language}.`;
 }
 
-Humanoid.prototype.poke = function(Hero) {
-  return `${this.name} poked ${} for 1 damage.`;
-}
 //  let test = new Humanoid({
 //   name: 'Joe',
 //   hp: 10,
@@ -147,10 +149,10 @@ const archer = new Humanoid({
 // console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
 
 // Stretch task: 
-// * Create Villian and Hero classes that inherit from the Humanoid class.  
-// * Give the Hero and Villians different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
-// * Create two new objects, one a villian and one a hero and fight it out with methods!
-const Villian = function(obj) {
+// * Create Villain and Hero classes that inherit from the Humanoid class.  
+// * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
+// * Create two new objects, one a villain and one a hero and fight it out with methods!
+const Villain = function(obj) {
   Humanoid.call(this, obj); 
 }
 
@@ -158,28 +160,30 @@ const Hero = function(obj) {
   Humanoid.call(this, obj);
 }
 
-Villian.prototype = {...Humanoid.prototype}
- let test = new Villian({
-  name: 'Joe',
+Hero.prototype = {...Humanoid.prototype}
+ let goodie = new Hero({
+  name: 'Sugoi',
   hp: 10,
   createdAt: 'Today',
   dimensions: 10,
   faction: 'Asian',
   weapons: 'Katana',
-  language: 'French',
-  victim: 'Bob'
+  language: 'Japanese',
+  victim: 'ParLeVousFrancais'
 });
 
-Hero.prototype = {...Humanoid.prototype}
- let testTwo = new Hero({
-  name: 'Bob',
-  hp: 11,
+Villain.prototype = {...Humanoid.prototype}
+ let baddie = new Villain({
+  name: 'ParLeVousFrancais',
+  hp: 10,
   createdAt: 'Today',
   dimensions: 10,
   faction: 'European',
-  weapons: 'none',
-  language: 'Spanish'
+  weapons: 'Rapier',
+  language: 'French',
+  victim: 'Sugoi'
 });
 
-console.log(test.poke(Hero.victim));
+console.log(goodie.hit(Villain.victim) + " " + baddie.takeDamage(Hero.victim));
+console.log(baddie.hit(Hero.victim) + " " + goodie.takeDamage(Villain.victim));
 // console.log(testTwo.destroy(), testTwo.takeDamage(), testTwo.greet());
