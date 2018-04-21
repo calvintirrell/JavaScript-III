@@ -156,11 +156,15 @@ const Villain = function(obj) {
   Humanoid.call(this, obj); 
 }
 
+Villain.prototype = Object.create(Humanoid.prototype);
+
 const Hero = function(obj) {
   Humanoid.call(this, obj);
 }
 
-Hero.prototype = {...Humanoid.prototype}
+Hero.prototype = Object.create(Humanoid.prototype);
+
+// Hero.prototype = {...Humanoid.prototype}
  let goodie = new Hero({
   name: 'Sugoi',
   hp: 10,
@@ -172,7 +176,7 @@ Hero.prototype = {...Humanoid.prototype}
   victim: 'ParLeVousFrancais'
 });
 
-Villain.prototype = {...Humanoid.prototype}
+// Villain.prototype = {...Humanoid.prototype}
  let baddie = new Villain({
   name: 'ParLeVousFrancais',
   hp: 10,
@@ -186,4 +190,3 @@ Villain.prototype = {...Humanoid.prototype}
 
 console.log(goodie.hit(Villain.victim) + " " + baddie.takeDamage(Hero.victim));
 console.log(baddie.hit(Hero.victim) + " " + goodie.takeDamage(Villain.victim));
-// console.log(testTwo.destroy(), testTwo.takeDamage(), testTwo.greet());

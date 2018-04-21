@@ -11,12 +11,12 @@
 
 // Principle 1
 // code example for Window Binding
-name = "D'Artangnan";
+name = "Bubba Hutt";
 function sayName(name) {
     console.log(this.name);
     return name;
 }
-sayName("D'Artagnan");
+sayName("Bubba Hutt");
 
 // Principle 2
 // code example for Implicit Binding
