@@ -13,11 +13,12 @@
   * dimensions
   * destroy() // prototype method -> returns the string 'Object was removed from the game.'
 */
-const GameObject = function(obj) {
+function GameObject (obj) {
   this.createdAt = obj.createdAt;
   this.dimensions = obj.dimensions;
 };
 
+// GameObject.prototype.destroy = () => `${this.name} was removed from the game.`;
 GameObject.prototype.destroy = function() {
   return `${this.name} was removed from the game.`;
 };
@@ -30,21 +31,18 @@ GameObject.prototype.destroy = function() {
 * should inherit destroy() from GameObject's prototype
 */
 
-const CharacterStats = function(obj) {
+function CharacterStats (obj) {
   GameObject.call(this, obj);
   this.hp = obj.hp;
   this.name = obj.name;
 };
 
-// console.log(GameObject.prototype);
+// CharacterStats.prototype = Object.create(GameObject.prototype);
 CharacterStats.prototype = {...GameObject.prototype};
+
 CharacterStats.prototype.takeDamage = function() {
   return `${this.name} took damage.`;
 };
-
-CharacterStats.prototype.hit = function() {
-  return `${this.name} hit ${this.name} for 1 damage.`;
-}
 
 /*
 === Humanoid ===
@@ -55,7 +53,7 @@ CharacterStats.prototype.hit = function() {
 * should inherit destroy() from GameObject through CharacterStats
 * should inherit takeDamage() from CharacterStats
 */
-const Humanoid = function(obj) { 
+function Humanoid (obj) { 
  CharacterStats.call(this, obj);
   this.faction = obj.faction;
   this.weapons = obj.weapons;
@@ -63,6 +61,7 @@ const Humanoid = function(obj) {
 };
 
 //Overwrite my prototype with {this stuff, which is CharacterStats}
+// Humanoid.prototype = Object.create(GameObject.prototype);
 Humanoid.prototype = {...CharacterStats.prototype};
 
 Humanoid.prototype.greet = function() {
@@ -70,15 +69,15 @@ Humanoid.prototype.greet = function() {
 }
 
 //  let test = new Humanoid({
-//   name: 'Joe',
-//   hp: 10,
-//   createdAt: 'Today',
-//   dimensions: 10,
-//   faction: 'Asian',
-//   weapons: 'Katana and sword',
-//   language: 'French'
+//   "name": "Bob",
+//   "hp": 10,
+//   "createdAt": '"Today"',
+//   "dimensions": 10,
+//   "faction": "Sleepers",
+//   "weapons": "Pajamas",
+//   "language": "Sleep Talk"
 // });
-// console.log(test.destroy(), test.takeDamage(), test.greet());
+// console.log(test);
 
 /*
 * Inheritance chain: Humanoid -> CharacterStats -> GameObject
@@ -152,41 +151,95 @@ const archer = new Humanoid({
 // * Create Villain and Hero classes that inherit from the Humanoid class.  
 // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
 // * Create two new objects, one a villain and one a hero and fight it out with methods!
-const Villain = function(obj) {
+function Villain (obj) {
   Humanoid.call(this, obj); 
 }
 
 Villain.prototype = Object.create(Humanoid.prototype);
 
-const Hero = function(obj) {
+Villain.prototype.bigHit = () => {
+  good.hp -= 6;
+  good.takeDamage();
+  return `Take this ${good.name}!`;
+}
+
+Villain.prototype.addHealth = () => {
+  bad.hp += 3;
+  return `I heal myself. Take that ${good.name}!`;
+}
+
+function Hero (obj) {
   Humanoid.call(this, obj);
 }
 
 Hero.prototype = Object.create(Humanoid.prototype);
 
-// Hero.prototype = {...Humanoid.prototype}
- let goodie = new Hero({
-  name: 'Sugoi',
-  hp: 10,
-  createdAt: 'Today',
-  dimensions: 10,
-  faction: 'Asian',
-  weapons: 'Katana',
-  language: 'Japanese',
-  victim: 'ParLeVousFrancais'
-});
+Hero.prototype.bigSmack = () => {
+  bad.hp -= 6;
+  bad.takeDamage();
+  return `Take this ${bad.name}!`;
+}
 
-// Villain.prototype = {...Humanoid.prototype}
- let baddie = new Villain({
+Hero.prototype.healthUp = () => {
+  good.hp += 3;
+  return `I heal myself. Take that ${bad.name}!`;
+}
+
+const bad = new Villain({
+  createdAt: new Date(),
+  dimension: {
+    length: 2,
+    width: 2,
+    height: 2
+  },
   name: 'ParLeVousFrancais',
-  hp: 10,
-  createdAt: 'Today',
-  dimensions: 10,
+  hp: 15,
   faction: 'European',
-  weapons: 'Rapier',
+  weapons: [
+    'Rapier',
+    'Knife'
+  ],
   language: 'French',
-  victim: 'Sugoi'
 });
 
-console.log(goodie.hit(Villain.victim) + " " + baddie.takeDamage(Hero.victim));
-console.log(baddie.hit(Hero.victim) + " " + goodie.takeDamage(Villain.victim));
+ const good = new Hero({
+  createdAt: new Date(),
+  dimension: {
+    length: 2,
+    width: 2,
+    height: 2
+  },
+  name: 'SugoiSugoi',
+  hp: 15,
+  faction: 'Asian',
+  weapons: [
+    'Katana',
+    'Knife'
+  ],
+  language: 'Japanese',
+});
+
+function fightSequence() {
+  let randomNum = null;
+  while(good.hp && bad.hp > 0) {
+    console.log(good.bigSmack());
+    console.log(bad.bigHit());
+    if (good.hp <= 8) {
+      randomNum = Math.floor(Math.random() * 11);
+      if (randomNum <= 4) {
+        console.log(`${good.name} is more resolute than ever to win! Health increases.`);
+        good.hp += 4;
+        console.log(`Hero's health: ${good.hp}`);
+      }
+    }
+    if (bad.hp <= 0) {
+      console.log(`${good.name} is the victor!`);
+      return bad.destroy();
+    }
+    else if (good.hp <= 0) {
+      console.log(`${bad.name} is the victor`);
+      return good.destroy();
+    }
+  }
+}
+fightSequence();
